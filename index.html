@@ -182,33 +182,13 @@
         .ad-grid .tile-empty { padding: 5px; }
         .ad-grid .icon-plus { margin-bottom: 5px; }
 
-        /* Punto de quiebre exclusivo para celulares */
         @media screen and (max-width: 768px) {
-            body {
-                height: auto;
-                overflow-y: auto;
-                display: block;
-                padding: 20px;
-            }
-            .dashboard-layout {
-                display: flex;
-                flex-direction: column;
-                height: auto;
-                gap: 30px;
-            }
-            .panel-left, .panel-center, .panel-right {
-                width: 100%;
-            }
-            .panel-center, .panel-right {
-                grid-template-rows: auto;
-                grid-auto-rows: 140px;
-            }
-            .apps-left, .ad-grid, .panel-center, .panel-right {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .footer-left {
-                margin-top: 30px;
-            }
+            body { height: auto; overflow-y: auto; display: block; padding: 20px; }
+            .dashboard-layout { display: flex; flex-direction: column; height: auto; gap: 30px; }
+            .panel-left, .panel-center, .panel-right { width: 100%; }
+            .panel-center, .panel-right { grid-template-rows: auto; grid-auto-rows: 140px; }
+            .apps-left, .ad-grid, .panel-center, .panel-right { grid-template-columns: repeat(2, 1fr); }
+            .footer-left { margin-top: 30px; }
         }
     </style>
 </head>
@@ -332,22 +312,31 @@
     </div>
 
     <script>
+        // Envoltorio seguro contra bloqueos de origen local (file://)
+        function getStorage(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
+        function setStorage(key, val) { try { localStorage.setItem(key, val); } catch(e) {} }
+        function remStorage(key) { try { localStorage.removeItem(key); } catch(e) {} }
+
+        // Reloj aislado inmune a fallos de almacenamiento
         function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
-            const dateOptions = { weekday: 'long', day: 'numeric', month: 'long' };
-            document.getElementById('date').innerText = now.toLocaleDateString('es-AR', dateOptions).toUpperCase();
+            try {
+                const now = new Date();
+                document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                document.getElementById('date').innerText = now.toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
+            } catch(e) {
+                console.error("Fallo reloj:", e);
+            }
         }
         setInterval(updateClock, 1000);
         updateClock();
 
         const themes = ['theme-dark', 'theme-dim', 'theme-light'];
-        let currentTheme = parseInt(localStorage.getItem('smartos_theme')) || 0;
+        let currentTheme = parseInt(getStorage('smartos_theme')) || 0;
         function applyTheme() { document.body.className = themes[currentTheme] === 'theme-dark' ? '' : themes[currentTheme]; }
         const themeBtn = document.getElementById('btn-theme');
         const cycleTheme = () => {
             currentTheme = (currentTheme + 1) % themes.length;
-            localStorage.setItem('smartos_theme', currentTheme);
+            setStorage('smartos_theme', currentTheme);
             applyTheme();
         };
         themeBtn.addEventListener('click', cycleTheme);
@@ -363,7 +352,7 @@
             const slotId = tile.getAttribute('data-slot');
             
             function renderTile() {
-                const savedData = localStorage.getItem('custom_slot_' + slotId);
+                const savedData = getStorage('custom_slot_' + slotId);
                 if (savedData) {
                     const data = JSON.parse(savedData);
                     tile.classList.remove('tile-empty');
@@ -380,7 +369,7 @@
                     tile.oncontextmenu = (e) => {
                         e.preventDefault();
                         if (confirm(`¿Querés borrar el acceso directo a "${data.name}"?`)) {
-                            localStorage.removeItem('custom_slot_' + slotId);
+                            remStorage('custom_slot_' + slotId);
                             resetTile(tile);
                         }
                     };
@@ -405,7 +394,7 @@
                         }
                         const userName = prompt("Ingresá el nombre corto para mostrar:");
                         if (userName) {
-                            localStorage.setItem('custom_slot_' + slotId, JSON.stringify({url: userUrl, name: userName}));
+                            setStorage('custom_slot_' + slotId, JSON.stringify({url: userUrl, name: userName}));
                             renderTile();
                         }
                     }
