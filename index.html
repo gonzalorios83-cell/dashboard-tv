@@ -70,6 +70,7 @@
         }
 
         .panel-left { display: flex; flex-direction: column; justify-content: space-between; }
+        
         .panel-center {
             border: 2px solid var(--accent);
             border-radius: 24px;
@@ -77,10 +78,11 @@
             background: linear-gradient(180deg, rgba(0,255,204,0.02) 0%, transparent 100%);
             box-shadow: 0 0 30px var(--accent-glow);
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             grid-template-rows: repeat(3, 1fr);
             gap: 20px;
         }
+
         .panel-right {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -97,6 +99,7 @@
         .apps-left { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
 
         .ad-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 15px; flex-grow: 1; margin-bottom: 15px; }
+        
         .ad-slot {
             background: rgba(0, 255, 204, 0.02);
             border: 1px dashed var(--tile-border);
@@ -155,15 +158,12 @@
         .tile-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); text-align: center; line-height: 1.2; }
         .tile:hover .tile-label, .tile:focus .tile-label { color: var(--text-main); }
 
-        /* Colores de Apps siempre activos */
         .c-ml svg { fill: #ffe600; }
         .c-mp svg { fill: #009ee3; }
         .c-gg svg { fill: #4285f4; }
         .c-yt svg { fill: #ff0000; }
         .c-ws svg { fill: #25d366; }
-        .c-nx svg { fill: #e50914; }
         .c-gm svg { fill: #ea4335; }
-        .c-sp svg { fill: #1db954; }
         .c-ig svg { fill: #E1306C; }
         .c-dr svg { fill: #0f9d58; }
         .c-tk svg { fill: #ffffff; }
@@ -171,7 +171,6 @@
         .c-fb svg { fill: #1877F2; }
         .c-ge svg { fill: #8ab4f8; }
         
-        /* El botón "+" sigue gris hasta que se le haga hover */
         .c-plus svg { fill: var(--text-muted); }
         .tile:hover .c-plus svg, .tile:focus .c-plus svg { fill: var(--text-main); }
 
@@ -179,6 +178,38 @@
         .tile-empty:hover, .tile-empty:focus { transform: scale(1.03); border-color: var(--focus-border); background: rgba(255,255,255,0.05); }
         .icon-plus { width: 30px; height: 30px; }
         .icon-plus svg { fill: var(--tile-border); transition: fill 0.2s; }
+
+        .ad-grid .tile-empty { padding: 5px; }
+        .ad-grid .icon-plus { margin-bottom: 5px; }
+
+        /* Punto de quiebre exclusivo para celulares */
+        @media screen and (max-width: 768px) {
+            body {
+                height: auto;
+                overflow-y: auto;
+                display: block;
+                padding: 20px;
+            }
+            .dashboard-layout {
+                display: flex;
+                flex-direction: column;
+                height: auto;
+                gap: 30px;
+            }
+            .panel-left, .panel-center, .panel-right {
+                width: 100%;
+            }
+            .panel-center, .panel-right {
+                grid-template-rows: auto;
+                grid-auto-rows: 140px;
+            }
+            .apps-left, .ad-grid, .panel-center, .panel-right {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .footer-left {
+                margin-top: 30px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -206,11 +237,13 @@
             </div>
 
             <div class="ad-grid">
-                <div class="ad-slot" tabindex="4" data-url="https://wa.me/5491148706501">
-                    <span class="ad-title">ESPACIO PUBLICITARIO</span><span class="ad-subtitle">WA: 11-4870-6501</span>
+                <div class="tile tile-empty tile-custom" tabindex="4" data-slot="4">
+                    <div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+                    <div class="tile-label" style="font-size: 0.55rem;">ASIGNAR URL</div>
                 </div>
-                <div class="ad-slot" tabindex="5" data-url="https://wa.me/5491148706501">
-                    <span class="ad-title">ESPACIO PUBLICITARIO</span><span class="ad-subtitle">WA: 11-4870-6501</span>
+                <div class="tile tile-empty tile-custom" tabindex="5" data-slot="5">
+                    <div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+                    <div class="tile-label" style="font-size: 0.55rem;">ASIGNAR URL</div>
                 </div>
                 <div class="ad-slot" tabindex="6" data-url="https://wa.me/5491148706501">
                     <span class="ad-title">ESPACIO PUBLICITARIO</span><span class="ad-subtitle">WA: 11-4870-6501</span>
@@ -247,45 +280,54 @@
                 <div class="icon-svg large c-ws"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg></div>
                 <div class="tile-label">WHATSAPP</div>
             </div>
-            <div class="tile" tabindex="11" data-url="https://netflix.com">
-                <div class="icon-svg large c-nx"><svg viewBox="0 0 24 24"><path d="M6.07 1.581C6.07 1.581 5.948.01 5.56 0c-.39 0-.638.163-.638.163v23.834s.885-.027 1.135-.558c.25-.53.013-18.15.013-18.15z"/><path d="M18.892 23.837c-.365.138-1.077.16-1.077.16V0s.884.025 1.135.556c.25.53.012 18.153.012 18.153s1.291 4.795-.07 5.128z"/><path d="M17.815.16L6.07 22.883s-.542.846.126.846c.667 0 11.62-23.569 11.62-23.569z"/></svg></div>
-                <div class="tile-label">NETFLIX</div>
-            </div>
-            <div class="tile" tabindex="12" data-url="https://mail.google.com">
+            <div class="tile" tabindex="11" data-url="https://mail.google.com">
                 <div class="icon-svg large c-gm"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
                 <div class="tile-label">GMAIL</div>
             </div>
-            <div class="tile" tabindex="13" data-url="https://spotify.com">
-                <div class="icon-svg large c-sp"><svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.494 17.306c-.216.354-.68.467-1.034.252-2.863-1.749-6.466-2.145-10.71-1.177-.405.093-.814-.162-.906-.568-.093-.405.162-.814.568-.906 4.646-1.062 8.624-.616 11.821 1.334.354.215.467.679.261 1.015zm1.467-3.258c-.272.443-.853.588-1.296.316-3.277-2.013-8.273-2.597-12.147-1.421-.497.151-1.022-.132-1.173-.63-.151-.497.132-1.022.63-1.173 4.43-1.344 9.932-.693 13.67 1.603.443.272.588.853.316 1.296zm.126-3.41c-3.928-2.332-10.422-2.548-14.195-1.403-.603.183-1.24-.155-1.423-.758-.183-.603.155-1.24.758-1.423 4.332-1.316 11.493-1.066 16.002 1.61.543.322.721 1.024.398 1.567-.322.543-1.024.721-1.567.398z"/></svg></div>
-                <div class="tile-label">SPOTIFY</div>
+            <div class="tile tile-empty tile-custom" tabindex="20" data-slot="6">
+                <div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+                <div class="tile-label" style="font-size: 0.55rem;">ASIGNAR URL</div>
+            </div>
+            <div class="tile tile-empty tile-custom" tabindex="21" data-slot="7">
+                <div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+                <div class="tile-label" style="font-size: 0.55rem;">ASIGNAR URL</div>
             </div>
         </div>
 
         <div class="panel-right">
-            <div class="tile" tabindex="14" data-url="https://instagram.com">
+            <div class="tile" tabindex="12" data-url="https://instagram.com">
                 <div class="icon-svg c-ig"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
                 <div class="tile-label">INSTAGRAM</div>
             </div>
-            <div class="tile" tabindex="15" data-url="https://drive.google.com">
-                <div class="icon-svg c-dr"><svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49-.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l-.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></div>
+            <div class="tile" tabindex="13" data-url="https://drive.google.com">
+                <div class="icon-svg c-dr"><svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07-.49-.12-.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l-.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></div>
                 <div class="tile-label">DRIVE</div>
             </div>
-            <div class="tile" tabindex="16" data-url="https://tiktok.com">
+            <div class="tile" tabindex="14" data-url="https://tiktok.com">
                 <div class="icon-svg c-tk"><svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.78-1.15 5.54-3.33 7.37-1.92 1.62-4.62 2.4-7.03 1.83-2.6-.62-4.73-2.67-5.36-5.22-.52-2.12-.13-4.44 1.2-6.17 1.29-1.64 3.35-2.55 5.42-2.48v4.06c-1.35-.11-2.73.53-3.42 1.66-.56.9-.66 2.05-.28 3 .36.92 1.26 1.57 2.25 1.74 1.18.2 2.45-.14 3.3-.92.83-.75 1.28-1.89 1.3-3.03.04-5.35.02-10.7.02-16.06z"/></svg></div>
                 <div class="tile-label">TIKTOK</div>
             </div>
-            <div class="tile" tabindex="17" data-url="https://facebook.com">
+            <div class="tile" tabindex="15" data-url="https://facebook.com">
                 <div class="icon-svg c-fb"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></div>
                 <div class="tile-label">FACEBOOK</div>
             </div>
-            <div class="tile" tabindex="18" data-url="https://gemini.google.com">
+            <div class="tile" tabindex="16" data-url="https://gemini.google.com">
                 <div class="icon-svg c-ge"><svg viewBox="0 0 24 24"><path d="M16.6 6.8l-1.3 2.8-2.8 1.3 2.8 1.3 1.3 2.8 1.3-2.8 2.8-1.3-2.8-1.3zM8.5 9.5L6 4 3.5 9.5 0 12l3.5 2.5L6 20l2.5-5.5L12 12z"/></svg></div>
                 <div class="tile-label">GEMINI</div>
             </div>
 
-            <div class="tile tile-empty tile-custom" tabindex="19" data-slot="1"><div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div></div>
-            <div class="tile tile-empty tile-custom" tabindex="20" data-slot="2"><div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div></div>
-            <div class="tile tile-empty tile-custom" tabindex="21" data-slot="3"><div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div></div>
+            <div class="tile tile-empty tile-custom" tabindex="17" data-slot="1">
+                <div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+                <div class="tile-label" style="font-size: 0.55rem;">ASIGNAR URL</div>
+            </div>
+            <div class="tile tile-empty tile-custom" tabindex="18" data-slot="2">
+                <div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+                <div class="tile-label" style="font-size: 0.55rem;">ASIGNAR URL</div>
+            </div>
+            <div class="tile tile-empty tile-custom" tabindex="19" data-slot="3">
+                <div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+                <div class="tile-label" style="font-size: 0.55rem;">ASIGNAR URL</div>
+            </div>
         </div>
     </div>
 
@@ -350,11 +392,17 @@
             function resetTile(el) {
                 el.classList.add('tile-empty');
                 el.removeAttribute('data-url');
-                el.innerHTML = `<div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>`;
+                el.innerHTML = `
+                    <div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+                    <div class="tile-label" style="font-size: 0.55rem;">ASIGNAR URL</div>
+                `;
                 el.oncontextmenu = null;
                 el.onclick = function setupTile() {
-                    const userUrl = prompt("Ingresá la URL para esta baldosa (ej: https://netflix.com):");
+                    let userUrl = prompt("Ingresá la URL para esta baldosa (ej: https://netflix.com):");
                     if (userUrl) {
+                        if (!userUrl.startsWith('http://') && !userUrl.startsWith('https://')) {
+                            userUrl = 'https://' + userUrl;
+                        }
                         const userName = prompt("Ingresá el nombre corto para mostrar:");
                         if (userName) {
                             localStorage.setItem('custom_slot_' + slotId, JSON.stringify({url: userUrl, name: userName}));
@@ -371,5 +419,3 @@
     </script>
 </body>
 </html>
-
-```
