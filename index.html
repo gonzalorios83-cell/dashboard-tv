@@ -1,410 +1,162 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart OS Dashboard</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='42' fill='none' stroke='%2300ffcc' stroke-width='8' stroke-dasharray='15, 10'/><text x='50' y='63' font-family='sans-serif' font-size='35' font-weight='900' fill='%23ffffff' text-anchor='middle'>OS</text></svg>">
-    
-    <style>
-        :root {
-            --bg-dark: #000000;
-            --panel-bg: #050505;
-            --tile-bg: #09090b;
-            --tile-border: #18181b;
-            --accent: #00ffcc;
-            --accent-glow: rgba(0, 255, 204, 0.15);
-            --text-main: #ffffff;
-            --text-muted: #71717a;
-            --focus-border: #ffffff;
-        }
-
-        body.theme-dim {
-            --bg-dark: #121212;
-            --panel-bg: #1a1a1a;
-            --tile-bg: #222222;
-            --tile-border: #333333;
-            --accent: #00e5b8;
-            --accent-glow: rgba(0, 229, 184, 0.15);
-            --text-main: #e0e0e0;
-            --text-muted: #888888;
-            --focus-border: #ffffff;
-        }
-
-        body.theme-light {
-            --bg-dark: #f4f4f5;
-            --panel-bg: #ffffff;
-            --tile-bg: #fafafa;
-            --tile-border: #e4e4e7;
-            --accent: #059669;
-            --accent-glow: rgba(5, 150, 105, 0.15);
-            --text-main: #18181b;
-            --text-muted: #a1a1aa;
-            --focus-border: #000000;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            user-select: none;
-            padding: 2vh 2vw;
-            transition: background-color 0.3s;
-        }
-
-        .dashboard-layout {
-            display: grid;
-            grid-template-columns: 22% 46% 28%;
-            gap: 20px;
-            width: 100%;
-            height: 96vh;
-            max-width: 1600px;
-        }
-
-        .panel-left { display: flex; flex-direction: column; justify-content: space-between; }
-        
-        .panel-center {
-            border: 2px solid var(--accent);
-            border-radius: 24px;
-            padding: 25px;
-            background: linear-gradient(180deg, rgba(0,255,204,0.02) 0%, transparent 100%);
-            box-shadow: 0 0 30px var(--accent-glow);
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        .panel-right {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: repeat(4, 1fr);
-            gap: 15px;
-        }
-
-        .brand-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
-        .brand-text h1 { font-size: 2.2rem; font-weight: 600; letter-spacing: 1px; line-height: 1; color: var(--text-main); }
-        .brand-text p { color: var(--accent); font-size: 0.7rem; letter-spacing: 2px; margin-top: 5px; white-space: nowrap; }
-        .logo-circle { width: 45px; height: 45px; border-radius: 50%; border: 2px dashed var(--accent); animation: rotate 20s linear infinite; flex-shrink: 0; margin-left: 10px; }
-        @keyframes rotate { 100% { transform: rotate(360deg); } }
-
-        .apps-left { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-
-        .ad-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 15px; flex-grow: 1; margin-bottom: 15px; }
-        
-        .ad-slot {
-            background: rgba(0, 255, 204, 0.02);
-            border: 1px dashed var(--tile-border);
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            outline: none;
-            text-align: center;
-            padding: 8px;
-        }
-        .ad-slot:hover, .ad-slot:focus { border-color: var(--accent); background: var(--accent-glow); transform: scale(1.02); }
-        .ad-title { font-size: 0.65rem; font-weight: 700; color: var(--text-main); letter-spacing: 1px; margin-bottom: 3px; line-height: 1.1; }
-        .ad-subtitle { font-size: 0.55rem; text-transform: uppercase; font-weight: 600; color: var(--accent); line-height: 1.2; }
-
-        .footer-left { margin-top: auto; display: flex; flex-direction: column; align-items: center; }
-        .clock-time { font-size: 2.6rem; font-weight: 300; line-height: 1; color: var(--text-main); text-align: center; }
-        .clock-date { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; margin-bottom: 12px; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; text-align: center; }
-        
-        .badge-row { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
-        .clock-badge { display: flex; align-items: center; font-size: 0.65rem; color: var(--accent); border: 1px solid var(--accent-glow); padding: 4px 8px; border-radius: 20px; font-weight: bold; }
-        .theme-mini-btn {
-            display: flex; align-items: center; gap: 5px; border: 1px solid var(--accent-glow); padding: 4px 8px; border-radius: 20px;
-            cursor: pointer; color: var(--accent); font-size: 0.65rem; font-weight: bold; transition: all 0.2s; outline: none;
-        }
-        .theme-mini-btn:hover, .theme-mini-btn:focus { background: var(--accent-glow); border-color: var(--accent); transform: scale(1.05); }
-        .theme-mini-btn svg { width: 11px; height: 11px; fill: var(--accent); }
-
-        .tile {
-            background-color: var(--tile-bg);
-            border: 1px solid var(--tile-border);
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-            outline: none;
-            padding: 15px;
-        }
-
-        .tile:hover, .tile:focus { border-color: var(--focus-border); transform: scale(1.03); z-index: 10; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-
-        .icon-svg { width: 45px; height: 45px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
-        .icon-svg.large { width: 55px; height: 55px; }
-        .icon-svg svg { width: 100%; height: 100%; transition: transform 0.2s; }
-
-        .tile:hover .icon-svg svg, .tile:focus .icon-svg svg { transform: scale(1.05); }
-
-        .tile-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); text-align: center; line-height: 1.2; }
-        .tile:hover .tile-label, .tile:focus .tile-label { color: var(--text-main); }
-
-        .c-ml svg { fill: #ffe600; }
-        .c-mp svg { fill: #009ee3; }
-        .c-gg svg { fill: #4285f4; }
-        .c-yt svg { fill: #ff0000; }
-        .c-ws svg { fill: #25d366; }
-        .c-gm svg { fill: #ea4335; }
-        .c-ig svg { fill: #E1306C; }
-        .c-dr svg { fill: #0f9d58; }
-        .c-tk svg { fill: #ffffff; }
-        body.theme-light .c-tk svg { fill: #000000; }
-        .c-fb svg { fill: #1877F2; }
-        .c-ge svg { fill: #8ab4f8; }
-        
-        .c-plus svg { fill: var(--text-muted); }
-        .tile:hover .c-plus svg, .tile:focus .c-plus svg { fill: var(--text-main); }
-
-        .tile-empty { border: 1px dashed var(--tile-border); background: transparent; }
-        .tile-empty:hover, .tile-empty:focus { transform: scale(1.03); border-color: var(--focus-border); background: rgba(255,255,255,0.05); }
-        .icon-plus { width: 30px; height: 30px; }
-        .icon-plus svg { fill: var(--tile-border); transition: fill 0.2s; }
-
-        .ad-grid .tile-empty { padding: 5px; }
-        .ad-grid .icon-plus { margin-bottom: 5px; }
-
-        @media screen and (max-width: 768px) {
-            body { height: auto; overflow-y: auto; display: block; padding: 20px; }
-            .dashboard-layout { display: flex; flex-direction: column; height: auto; gap: 30px; }
-            .panel-left, .panel-center, .panel-right { width: 100%; }
-            .panel-center, .panel-right { grid-template-rows: auto; grid-auto-rows: 140px; }
-            .apps-left, .ad-grid, .panel-center, .panel-right { grid-template-columns: repeat(2, 1fr); }
-            .footer-left { margin-top: 30px; }
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#020713" />
+  <title>Punto Smart OS</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Punto Smart OS">
+        <span class="brand-mark"></span>
+        <span class="brand-text"><span>PUNTO</span><strong>SMART OS</strong></span>
+      </a>
 
-    <div class="dashboard-layout">
-        
-        <div class="panel-left">
-            <div class="brand-header">
-                <div class="brand-text">
-                    <h1>SMART OS</h1>
-                    <p>THE NEXT PARADIGM</p>
-                </div>
-                <div class="logo-circle"></div>
-            </div>
-
-            <div class="apps-left">
-                <div class="tile" tabindex="2" data-url="https://mercadolibre.com.ar">
-                    <div class="icon-svg large c-ml"><svg viewBox="0 0 24 24"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm7 17H5V8h14v15z"/></svg></div>
-                    <div class="tile-label">MERCADO LIBRE</div>
-                </div>
-                <div class="tile" tabindex="3" data-url="https://mercadopago.com.ar">
-                    <div class="icon-svg large c-mp"><svg viewBox="0 0 24 24"><path d="M21 7.28V5c0-1.1-.9-2-2-2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-2.28A2 2 0 0 0 22 15V9a2 2 0 0 0-1-1.72zM20 9v6h-7V9h7zM5 19V5h14v2h-6c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h6v2H5z"/><circle cx="16" cy="12" r="1.5"/></svg></div>
-                    <div class="tile-label">MERCADO PAGO</div>
-                </div>
-            </div>
-
-            <div class="ad-grid">
-                <div class="tile tile-empty tile-custom" tabindex="4" data-slot="4">
-                    <div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
-                    <div class="tile-label" style="font-size: 0.55rem;">ASIGNAR URL</div>
-                </div>
-                <div class="tile tile-empty tile-custom" tabindex="5" data-slot="5">
-                    <div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
-                    <div class="tile-label" style="font-size: 0.55rem;">ASIGNAR URL</div>
-                </div>
-                <div class="ad-slot" tabindex="6" data-url="https://wa.me/5491148706501">
-                    <span class="ad-title">ESPACIO PUBLICITARIO</span><span class="ad-subtitle">WA: 11-4870-6501</span>
-                </div>
-                <div class="ad-slot" tabindex="7" data-url="https://wa.me/5491148706501">
-                    <span class="ad-title">ESPACIO PUBLICITARIO</span><span class="ad-subtitle">WA: 11-4870-6501</span>
-                </div>
-            </div>
-
-            <div class="footer-left">
-                <div class="clock-time" id="clock">00:00</div>
-                <div class="clock-date" id="date">CARGANDO FECHA...</div>
-                
-                <div class="badge-row">
-                    <div class="clock-badge">SMART CORE v1.1</div>
-                    <div class="theme-mini-btn" id="btn-theme" tabindex="1">
-                        <svg viewBox="0 0 24 24"><path d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zm1-17.93c3.94.49 7 3.85 7 7.93s-3.05 7.44-7 7.93V4.07z"/></svg>
-                        <span>TEMA</span>
-                    </div>
-                </div>
-            </div>
+      <div class="status-zone">
+        <div class="status-pill hide-small">
+          <span class="status-icon">◷</span>
+          <span><b id="clock">--:--</b><small id="dateText">Cargando...</small></span>
         </div>
+        <a class="status-pill hide-small" data-open="https://www.google.com/search?q=clima+buenos+aires" href="https://www.google.com/search?q=clima+buenos+aires" target="_blank" rel="noopener">
+          <span class="status-icon weather">☁</span>
+          <span><b>Clima</b><small>Buenos Aires</small></span>
+        </a>
+        <a class="status-pill dolar" href="https://dolarhoy.com/" target="_blank" rel="noopener">
+          <span class="dolar-logo">$</span>
+          <span><b>Dólar Hoy</b></span>
+        </a>
+        <button class="gear" id="resetBtn" title="Restaurar orden y accesos">⚙</button>
+      </div>
+    </header>
 
-        <div class="panel-center">
-            <div class="tile" tabindex="8" data-url="https://google.com">
-                <div class="icon-svg large c-gg"><svg viewBox="0 0 24 24"><path d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114A5.53 5.53 0 0 1 8.46 13c0-3.046 2.467-5.514 5.53-5.514 1.358 0 2.597.493 3.56 1.306l3.08-3.08C18.77 3.993 16.585 3 13.99 3 8.473 3 4 7.473 4 13s4.473 10 9.99 10c5.764 0 9.577-4.05 9.577-9.75 0-.66-.06-1.29-.168-1.965H12.24z"/></svg></div>
-                <div class="tile-label">GOOGLE</div>
-            </div>
-            <div class="tile" tabindex="9" data-url="https://youtube.com/tv">
-                <div class="icon-svg large c-yt"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></div>
-                <div class="tile-label">YOUTUBE</div>
-            </div>
-            <div class="tile" tabindex="10" data-url="https://web.whatsapp.com">
-                <div class="icon-svg large c-ws"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg></div>
-                <div class="tile-label">WHATSAPP</div>
-            </div>
-            <div class="tile" tabindex="11" data-url="https://mail.google.com">
-                <div class="icon-svg large c-gm"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
-                <div class="tile-label">GMAIL</div>
-            </div>
-            <div class="tile tile-empty tile-custom" tabindex="20" data-slot="6">
-                <div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
-                <div class="tile-label" style="font-size: 0.55rem;">ASIGNAR URL</div>
-            </div>
-            <div class="tile tile-empty tile-custom" tabindex="21" data-slot="7">
-                <div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
-                <div class="tile-label" style="font-size: 0.55rem;">ASIGNAR URL</div>
-            </div>
+    <main>
+      <section class="search-card">
+        <span>⌕</span>
+        <input id="searchInput" type="search" autocomplete="off" placeholder="Buscar aplicaciones o sitios..." />
+      </section>
+
+      <a class="ad-banner main-ad" href="https://wa.me/5491148706501?text=Hola%2C%20quiero%20consultar%20por%20un%20espacio%20publicitario%20en%20Punto%20Smart%20OS" target="_blank" rel="noopener">
+        <span class="ad-icon">↗</span>
+        <span class="ad-copy"><b>Impulsá tu negocio</b><small>Publicidad efectiva, resultados reales.</small></span>
+        <span class="ad-cta">ANUNCIÁ ACÁ</span>
+      </a>
+
+      <section class="panel wide" data-section="Favoritos y Esenciales">
+        <div class="panel-title"><span>★</span><h2>Favoritos y Esenciales</h2></div>
+        <div class="icon-grid" id="favoritesGrid"></div>
+      </section>
+
+      <section class="panel wide" data-section="Compras y Contenido">
+        <div class="panel-title"><span>🛒</span><h2>Compras y Contenido</h2></div>
+        <div class="icon-grid" id="contentGrid"></div>
+      </section>
+
+      <section class="panel wide" data-section="IA y Productividad">
+        <div class="panel-title"><span>✦</span><h2>IA y Productividad</h2></div>
+        <div class="icon-grid" id="aiGrid"></div>
+      </section>
+
+      <section class="folder-board">
+        <article class="panel folder-panel" data-folder="tramites">
+          <button class="folder-open" data-folder="tramites" aria-label="Abrir carpeta Trámites">›</button>
+          <div class="panel-title"><span>▣</span><h2>Trámites</h2></div>
+          <div class="mini-grid" id="tramitesGrid"></div>
+        </article>
+
+        <article class="panel folder-panel" data-folder="noticias">
+          <button class="folder-open" data-folder="noticias" aria-label="Abrir carpeta Noticias y Deportes">›</button>
+          <div class="panel-title"><span>▣</span><h2>Noticias y Deportes</h2></div>
+          <div class="mini-grid" id="noticiasGrid"></div>
+        </article>
+
+        <article class="panel folder-panel" data-folder="bancos">
+          <button class="folder-open" data-folder="bancos" aria-label="Abrir carpeta Bancos">›</button>
+          <div class="panel-title"><span>▣</span><h2>Bancos</h2></div>
+          <div class="mini-grid" id="bancosGrid"></div>
+        </article>
+
+        <article class="panel folder-panel" data-folder="negocio">
+          <button class="folder-open" data-folder="negocio" aria-label="Abrir carpeta Negocio y Proveedores">›</button>
+          <div class="panel-title"><span>▣</span><h2>Negocio / Proveedores</h2></div>
+          <div class="mini-grid" id="negocioGrid"></div>
+        </article>
+      </section>
+
+      <section class="custom-area">
+        <div class="custom-left">
+          <div class="custom-title">Tus accesos personalizados <span title="Se guardan en este dispositivo">ⓘ</span></div>
+          <div class="custom-grid" id="customGrid"></div>
         </div>
+        <article class="help-card">
+          <span class="help-spark">✦</span>
+          <div>
+            <b>Personalizá tu Smart OS</b>
+            <p>Agregá los sitios y aplicaciones que más usás. Tocá una baldosa libre, pegá el link y guardalo.</p>
+            <button id="howBtn">¿Cómo agregar un acceso?</button>
+          </div>
+        </article>
+      </section>
 
-        <div class="panel-right">
-            <div class="tile" tabindex="12" data-url="https://instagram.com">
-                <div class="icon-svg c-ig"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
-                <div class="tile-label">INSTAGRAM</div>
-            </div>
-            <div class="tile" tabindex="13" data-url="https://drive.google.com">
-                <div class="icon-svg c-dr"><svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07-.49-.12-.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l-.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></div>
-                <div class="tile-label">DRIVE</div>
-            </div>
-            <div class="tile" tabindex="14" data-url="https://tiktok.com">
-                <div class="icon-svg c-tk"><svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.78-1.15 5.54-3.33 7.37-1.92 1.62-4.62 2.4-7.03 1.83-2.6-.62-4.73-2.67-5.36-5.22-.52-2.12-.13-4.44 1.2-6.17 1.29-1.64 3.35-2.55 5.42-2.48v4.06c-1.35-.11-2.73.53-3.42 1.66-.56.9-.66 2.05-.28 3 .36.92 1.26 1.57 2.25 1.74 1.18.2 2.45-.14 3.3-.92.83-.75 1.28-1.89 1.3-3.03.04-5.35.02-10.7.02-16.06z"/></svg></div>
-                <div class="tile-label">TIKTOK</div>
-            </div>
-            <div class="tile" tabindex="15" data-url="https://facebook.com">
-                <div class="icon-svg c-fb"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></div>
-                <div class="tile-label">FACEBOOK</div>
-            </div>
-            <div class="tile" tabindex="16" data-url="https://gemini.google.com">
-                <div class="icon-svg c-ge"><svg viewBox="0 0 24 24"><path d="M16.6 6.8l-1.3 2.8-2.8 1.3 2.8 1.3 1.3 2.8 1.3-2.8 2.8-1.3-2.8-1.3zM8.5 9.5L6 4 3.5 9.5 0 12l3.5 2.5L6 20l2.5-5.5L12 12z"/></svg></div>
-                <div class="tile-label">GEMINI</div>
-            </div>
+      <a class="ad-banner bottom-ad" href="https://wa.me/5491148706501?text=Hola%2C%20quiero%20consultar%20por%20un%20espacio%20publicitario%20en%20Punto%20Smart%20OS" target="_blank" rel="noopener">
+        <span class="ad-icon">📣</span>
+        <span class="ad-copy"><b>Llegá a más personas</b><small>Anunciá tu producto o servicio en Punto Smart OS.</small></span>
+        <span class="ad-cta">ANUNCIÁ ACÁ</span>
+      </a>
+    </main>
 
-            <div class="tile tile-empty tile-custom" tabindex="17" data-slot="1">
-                <div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
-                <div class="tile-label" style="font-size: 0.55rem;">ASIGNAR URL</div>
-            </div>
-            <div class="tile tile-empty tile-custom" tabindex="18" data-slot="2">
-                <div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
-                <div class="tile-label" style="font-size: 0.55rem;">ASIGNAR URL</div>
-            </div>
-            <div class="tile tile-empty tile-custom" tabindex="19" data-slot="3">
-                <div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
-                <div class="tile-label" style="font-size: 0.55rem;">ASIGNAR URL</div>
-            </div>
-        </div>
+    <footer class="footer">
+      <div><b>PUNTO SMART OS</b><small>Tu portal. Todo en un lugar.</small></div>
+      <button id="editBtn">✎ Editar</button>
+      <button id="supportBtn">? Soporte</button>
+      <button id="suggestBtn">☏ Sugerencias</button>
+      <span>© 2026 Punto Smart OS</span>
+    </footer>
+  </div>
+
+  <dialog id="customDialog" class="modal">
+    <form method="dialog" id="customForm">
+      <h3>Agregar página o aplicación</h3>
+      <label>Nombre
+        <input id="customName" maxlength="24" placeholder="Ej: Proveedor celulares" required />
+      </label>
+      <label>Link
+        <input id="customUrl" type="url" placeholder="https://www.ejemplo.com" required />
+      </label>
+      <label>Icono opcional
+        <input id="customIcon" type="url" placeholder="https://.../icono.png" />
+      </label>
+      <p class="modal-note">Si no cargás icono, intenta traer el favicon automáticamente. Si falla, usa la inicial del nombre.</p>
+      <div class="modal-actions">
+        <button type="button" class="danger" id="deleteCustomBtn">Borrar</button>
+        <span></span>
+        <button type="button" id="cancelCustomBtn">Cancelar</button>
+        <button class="primary" value="save">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="folderDialog" class="modal folder-modal">
+    <div class="folder-modal-inner">
+      <button class="modal-close" id="closeFolderBtn">×</button>
+      <h3 id="folderTitle">Carpeta</h3>
+      <div class="icon-grid modal-grid" id="folderModalGrid"></div>
     </div>
+  </dialog>
 
-    <script>
-        // Envoltorio seguro contra bloqueos de origen local (file://)
-        function getStorage(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
-        function setStorage(key, val) { try { localStorage.setItem(key, val); } catch(e) {} }
-        function remStorage(key) { try { localStorage.removeItem(key); } catch(e) {} }
+  <dialog id="infoDialog" class="modal">
+    <div class="info-content">
+      <button class="modal-close" id="closeInfoBtn">×</button>
+      <h3>Cómo agregar un acceso</h3>
+      <p>1. Tocá una baldosa “Agregar acceso”.</p>
+      <p>2. Escribí el nombre y pegá el link completo, por ejemplo: <b>https://www.ejemplo.com</b>.</p>
+      <p>3. Guardá. El acceso queda en este dispositivo.</p>
+      <p>Para cambiarlo, tocá “Editar” y seleccioná la baldosa.</p>
+    </div>
+  </dialog>
 
-        // Reloj aislado inmune a fallos de almacenamiento
-        function updateClock() {
-            try {
-                const now = new Date();
-                document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                document.getElementById('date').innerText = now.toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
-            } catch(e) {
-                console.error("Fallo reloj:", e);
-            }
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        const themes = ['theme-dark', 'theme-dim', 'theme-light'];
-        let currentTheme = parseInt(getStorage('smartos_theme')) || 0;
-        function applyTheme() { document.body.className = themes[currentTheme] === 'theme-dark' ? '' : themes[currentTheme]; }
-        const themeBtn = document.getElementById('btn-theme');
-        const cycleTheme = () => {
-            currentTheme = (currentTheme + 1) % themes.length;
-            setStorage('smartos_theme', currentTheme);
-            applyTheme();
-        };
-        themeBtn.addEventListener('click', cycleTheme);
-        themeBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter') cycleTheme(); });
-        applyTheme();
-
-        document.querySelectorAll('.tile[data-url], .ad-slot[data-url]').forEach(el => {
-            el.addEventListener('click', () => { window.location.href = el.getAttribute('data-url'); });
-            el.addEventListener('keydown', (e) => { if (e.key === 'Enter') window.location.href = el.getAttribute('data-url'); });
-        });
-
-        document.querySelectorAll('.tile-custom').forEach(tile => {
-            const slotId = tile.getAttribute('data-slot');
-            
-            function renderTile() {
-                const savedData = getStorage('custom_slot_' + slotId);
-                if (savedData) {
-                    const data = JSON.parse(savedData);
-                    tile.classList.remove('tile-empty');
-                    tile.setAttribute('data-url', data.url);
-                    tile.innerHTML = `
-                        <div class="icon-svg c-plus">
-                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
-                        </div>
-                        <div class="tile-label">${data.name.toUpperCase()}</div>
-                    `;
-                    tile.onclick = () => window.location.href = data.url;
-                    tile.onkeydown = (e) => { if (e.key === 'Enter') window.location.href = data.url; };
-                    
-                    tile.oncontextmenu = (e) => {
-                        e.preventDefault();
-                        if (confirm(`¿Querés borrar el acceso directo a "${data.name}"?`)) {
-                            remStorage('custom_slot_' + slotId);
-                            resetTile(tile);
-                        }
-                    };
-                } else {
-                    resetTile(tile);
-                }
-            }
-
-            function resetTile(el) {
-                el.classList.add('tile-empty');
-                el.removeAttribute('data-url');
-                el.innerHTML = `
-                    <div class="icon-plus c-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
-                    <div class="tile-label" style="font-size: 0.55rem;">ASIGNAR URL</div>
-                `;
-                el.oncontextmenu = null;
-                el.onclick = function setupTile() {
-                    let userUrl = prompt("Ingresá la URL para esta baldosa (ej: https://netflix.com):");
-                    if (userUrl) {
-                        if (!userUrl.startsWith('http://') && !userUrl.startsWith('https://')) {
-                            userUrl = 'https://' + userUrl;
-                        }
-                        const userName = prompt("Ingresá el nombre corto para mostrar:");
-                        if (userName) {
-                            setStorage('custom_slot_' + slotId, JSON.stringify({url: userUrl, name: userName}));
-                            renderTile();
-                        }
-                    }
-                };
-                el.onkeydown = (e) => { if (e.key === 'Enter') el.onclick(); };
-            }
-            renderTile();
-        });
-
-        document.querySelector('.panel-center .tile').focus();
-    </script>
+  <script src="script.js"></script>
 </body>
 </html>
