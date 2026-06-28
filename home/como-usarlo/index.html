@@ -4,20 +4,20 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#020713" />
-  <title>Punto Smart OS | Escritorio digital en la nube</title>
-  <meta name="description" content="Ordená accesos, búsquedas, herramientas, trámites, IA y sitios frecuentes en una pantalla rápida, simple y editable." />
-  <link rel="canonical" href="https://puntosmart.com.ar/home/" />
-  <link rel="icon" href="../favicon.ico" sizes="any" />
-  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
-  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
-  <link rel="manifest" href="../manifest.webmanifest" />
+  <title>Cómo usar Punto Smart OS | Guía rápida</title>
+  <meta name="description" content="Aprendé a usar Punto Smart OS para buscar, abrir accesos, ordenar herramientas y guardar páginas frecuentes." />
+  <link rel="canonical" href="https://puntosmart.com.ar/home/como-usarlo/" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
+  <link rel="manifest" href="../../manifest.webmanifest" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Punto Smart OS | Escritorio digital en la nube" />
-  <meta property="og:description" content="Ordená accesos, búsquedas, herramientas, trámites, IA y sitios frecuentes en una pantalla rápida, simple y editable." />
-  <meta property="og:url" content="https://puntosmart.com.ar/home/" />
+  <meta property="og:title" content="Cómo usar Punto Smart OS | Guía rápida" />
+  <meta property="og:description" content="Aprendé a usar Punto Smart OS para buscar, abrir accesos, ordenar herramientas y guardar páginas frecuentes." />
+  <meta property="og:url" content="https://puntosmart.com.ar/home/como-usarlo/" />
   <meta name="twitter:card" content="summary" />
   <style>
-/* Punto Smart OS v14.5 home limpia */
+/* Punto Smart OS v14.3 inline CSS fix */
 
 :root{
   --bg:#020713;
@@ -60,36 +60,10 @@ button,input{font:inherit}
 @media (max-width:900px){.topbar{align-items:flex-start;flex-direction:column}.main-nav{justify-content:flex-start}.hero{grid-template-columns:1fr}.cards,.cards.two,.cards.four,.price-grid{grid-template-columns:1fr}.wide-panel{grid-template-columns:1fr}.quick-proof{grid-template-columns:1fr}.tile-grid{grid-template-columns:repeat(2,1fr)}.hide-small{display:none}.hero-card{padding:24px}.page-hero{padding:26px}.section-head{display:block}.section-head p{margin-top:8px}.ad-banner{align-items:flex-start;flex-direction:column}.ad-cta{align-self:flex-start}}
 @media (max-width:460px){.app-shell{width:min(100% - 18px,1180px)}.main-nav a{font-size:12px;padding:7px 8px}.hero h1{font-size:38px}.smart-search-box{align-items:stretch;flex-direction:column}.smart-search-box button{width:100%}.tile-grid{grid-template-columns:1fr}.status-zone{width:100%;justify-content:space-between}.status-pill{flex:1}.gear{flex:0 0 38px}}
 
-  
-/* v14.5: home más limpia */
-.home-clean .topbar{padding:12px 16px;align-items:center}
-.home-clean .topbar .status-zone{display:none}
-.home-clean .main-nav{gap:6px}
-.home-clean .main-nav a{font-size:13px;padding:8px 10px}
-.home-clean .hero{grid-template-columns:minmax(0,1.12fr) minmax(300px,.78fr);gap:18px;align-items:stretch}
-.home-clean .hero-card{padding:34px 32px}
-.home-clean .hero h1{font-size:clamp(38px,5.25vw,64px);line-height:.98;letter-spacing:-.055em}
-.home-clean .hero p{font-size:17px;max-width:620px}
-.home-clean .os-card.clean-preview{padding:20px;gap:14px;justify-content:center;overflow:hidden;position:relative}
-.home-clean .os-card.clean-preview:before{content:"";position:absolute;inset:-40px auto auto -30px;width:180px;height:180px;border-radius:50%;background:rgba(95,208,255,.12);filter:blur(20px);pointer-events:none}
-.preview-window{position:relative;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,rgba(19,39,78,.58),rgba(6,15,31,.62));padding:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
-.preview-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
-.preview-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);border:1px solid var(--line2);border-radius:999px;padding:6px 9px;background:rgba(95,208,255,.08)}
-.preview-dot{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 18px rgba(84,243,177,.5)}
-.preview-search{border:1px solid var(--line2);border-radius:17px;padding:12px;background:rgba(0,0,0,.16);margin-bottom:12px}
-.preview-search b{display:block;font-size:15px;margin-bottom:4px}.preview-search small{color:var(--muted);line-height:1.35}.preview-bar{height:38px;border:1px solid var(--line);border-radius:14px;margin-top:12px;background:linear-gradient(90deg,rgba(255,255,255,.08),rgba(95,208,255,.10),rgba(139,92,255,.08))}
-.preview-list{display:grid;gap:9px}
-.preview-row{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:center;border:1px solid var(--line);border-radius:15px;padding:10px 11px;background:rgba(255,255,255,.04)}
-.preview-row b{font-size:13px}.preview-row span{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.preview-note{border:1px solid rgba(95,208,255,.32);border-radius:18px;background:rgba(95,208,255,.08);padding:13px 14px;color:var(--soft);line-height:1.42;font-size:13px}
-.home-clean .ad-banner{display:none}
-@media (max-width:900px){.home-clean .hero{grid-template-columns:1fr}.home-clean .topbar .status-zone{display:none}.home-clean .hero-card{padding:26px}.preview-row{grid-template-columns:86px 1fr}}
-@media (max-width:460px){.home-clean .main-nav{display:none}.home-clean .hero h1{font-size:38px}.home-clean .preview-row{grid-template-columns:1fr;gap:3px}.home-clean .quick-proof{display:none}}
-
   </style>
-  <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Punto Smart OS", "applicationCategory": "ProductivityApplication", "operatingSystem": "Web", "url": "https://puntosmart.com.ar/home/", "description": "Escritorio digital para ordenar accesos, búsquedas, herramientas, trámites y sitios frecuentes desde el navegador.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "ARS"}}, {"@context": "https://schema.org", "@type": "Organization", "name": "Punto Smart", "url": "https://puntosmart.com.ar"}]</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Punto Smart OS", "applicationCategory": "ProductivityApplication", "operatingSystem": "Web", "url": "https://puntosmart.com.ar/home/", "description": "Escritorio digital para ordenar accesos, búsquedas, herramientas, trámites y sitios frecuentes desde el navegador.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "ARS"}}</script>
 </head>
-<body class="home-clean">
+<body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
   <div class="app-shell">
     <header class="topbar">
@@ -97,7 +71,7 @@ button,input{font:inherit}
         <span class="brand-mark"></span>
         <span class="brand-text"><span>PUNTO</span><strong>SMART OS</strong></span>
       </a>
-      <nav class="main-nav" aria-label="Navegación principal"><a href="/home/" class="active">Home</a><a href="/home/como-usarlo/" class="">Cómo usarlo</a><a href="/home/para-comercios/" class="">Comercios</a><a href="/home/free/" class="">Free</a><a href="/home/plus/" class="">Plus</a><a href="/home/privacidad/" class="">Privacidad</a></nav>
+      <nav class="main-nav" aria-label="Navegación principal"><a href="/home/" class="">Home</a><a href="/home/como-usarlo/" class="active">Cómo usarlo</a><a href="/home/para-comercios/" class="">Comercios</a><a href="/home/free/" class="">Free</a><a href="/home/plus/" class="">Plus</a><a href="/home/privacidad/" class="">Privacidad</a></nav>
       <div class="status-zone">
         <div class="status-pill hide-small"><span>◷</span><span><b id="clock">--:--</b><small id="dateText">Cargando...</small></span></div>
         <a class="status-pill hide-small" href="https://www.google.com/search?q=clima+buenos+aires" target="_blank" rel="noopener"><span>☁</span><span><b>Clima</b><small>Buenos Aires</small></span></a>
@@ -106,66 +80,15 @@ button,input{font:inherit}
     </header>
     <main id="contenido">
 
-      <section class="hero">
-        <article class="hero-card">
-          <span class="eyebrow">Interfaz Híbrida Operativa</span>
-          <h1>Tu entorno digital, ordenado en un solo lugar.</h1>
-          <p>Punto Smart OS reúne accesos, búsquedas, herramientas, trámites, IA, proveedores y sitios frecuentes en una pantalla simple, rápida y editable desde el navegador.</p>
-          <div class="cta-row">
-            <a class="btn primary" href="/home/free/">Usar versión Free</a>
-            <a class="btn" href="/home/para-comercios/">Ver uso comercial</a>
-            <a class="btn" href="https://wa.me/5491148706501?text=Hola%2C%20quiero%20consultar%20por%20Punto%20Smart%20OS" target="_blank" rel="noopener">Consultar Plus</a>
-          </div>
-          <div class="quick-proof" aria-label="Beneficios principales">
-            <div class="proof"><b>Menos caos</b><small>Una pantalla para entrar rápido a lo que usás todos los días.</small></div>
-            <div class="proof"><b>Más velocidad</b><small>Búsqueda por intención: web, IA, compras, trámites, soporte y más.</small></div>
-            <div class="proof"><b>Más control</b><small>Accesos personalizables guardados en el dispositivo.</small></div>
-          </div>
-        </article>
-        <aside class="os-card clean-preview" aria-label="Vista previa simplificada de Punto Smart OS">
-          <div class="preview-window">
-            <div class="preview-top">
-              <span class="preview-label">Vista de interfaz</span>
-              <span class="preview-dot" aria-hidden="true"></span>
-            </div>
-            <div class="preview-search">
-              <b>Smart Search</b>
-              <small>Elegí intención, escribí una búsqueda y abrí el resultado directo.</small>
-              <div class="preview-bar" aria-hidden="true"></div>
-            </div>
-            <div class="preview-list">
-              <div class="preview-row"><b>Accesos</b><span>Google · ChatGPT · YouTube · WhatsApp</span></div>
-              <div class="preview-row"><b>Comercio</b><span>ARCA · Mercado Libre · Mercado Pago · Bancos</span></div>
-              <div class="preview-row"><b>Plus</b><span>Orden propio, curaduría y accesos reales.</span></div>
-            </div>
-          </div>
-          <div class="preview-note"><b>Una pantalla central.</b> Menos ruido, más orden y accesos rápidos para trabajar, vender o navegar.</div>
-        </aside>
-      </section>
-
-      <section class="section">
-        <div class="section-head"><h2>Qué resuelve</h2><p>No intenta reemplazar tu navegador. Lo ordena. Convierte una navegación dispersa en un tablero operativo simple.</p></div>
-        <div class="cards">
-          <article class="text-card"><h3>Accesos claros</h3><p>Sitios frecuentes agrupados por uso real: trabajo, compras, trámites, bancos, noticias, proveedores, IA y soporte.</p></article>
-          <article class="text-card"><h3>Búsqueda por intención</h3><p>No es lo mismo buscar en Google, YouTube, IA, tiendas o trámites. Punto Smart OS separa esos caminos.</p></article>
-          <article class="text-card"><h3>Uso inmediato</h3><p>Funciona desde el navegador. No obliga a instalar, registrar o aprender un sistema complejo para empezar.</p></article>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="section-head"><h2>Para quién sirve</h2><p>Usuarios comunes, comercios, vendedores, técnicos, oficinas y cualquier persona que vive saltando entre muchas páginas.</p></div>
-        <div class="cards four">
-          <article class="text-card"><h3>Comercios</h3><p>Accesos a proveedores, bancos, cobros, logística, redes y catálogos.</p></article>
-          <article class="text-card"><h3>Oficinas</h3><p>Trámites, documentos, herramientas de IA, correo, agenda y soporte.</p></article>
-          <article class="text-card"><h3>Uso personal</h3><p>Noticias, compras, redes, videos, trámites y accesos frecuentes.</p></article>
-          <article class="text-card"><h3>Publicidad</h3><p>Espacios visibles para marcas, servicios y productos relevantes.</p></article>
-        </div>
-      </section>
-
-      <section class="wide-panel">
-        <div><h2>Versión Free para probar. Versión Plus para ordenar en serio.</h2><p>La versión gratuita sirve para entender el concepto. Plus suma personalización, curaduría y adaptación al uso real de cada comercio o usuario.</p></div>
-        <div class="cta-row"><a class="btn primary" href="/home/free/">Ver Free</a><a class="btn" href="/home/plus/">Ver Plus</a></div>
-      </section>
+      <section class="page-hero"><span class="eyebrow">Uso simple</span><h1>Cómo usar Punto Smart OS</h1><p>La idea es directa: abrir una sola pantalla y desde ahí entrar rápido a tus herramientas, búsquedas y sitios frecuentes.</p></section>
+      <section class="section"><div class="steps">
+        <article class="step"><div><h3>Abrí la pantalla principal</h3><p>Entrás a Punto Smart OS desde el navegador y usás el tablero como punto de partida.</p></div></article>
+        <article class="step"><div><h3>Elegí qué necesitás hacer</h3><p>Podés buscar en web, IA, videos, compras, comparación de precios, trámites o soporte.</p></div></article>
+        <article class="step"><div><h3>Usá las categorías</h3><p>Los accesos están agrupados para evitar perder tiempo entre pestañas, favoritos viejos y búsquedas repetidas.</p></div></article>
+        <article class="step"><div><h3>Agregá tus propios accesos</h3><p>En la zona personal podés guardar páginas propias. Quedan en ese dispositivo para entrar más rápido.</p></div></article>
+        <article class="step"><div><h3>Pasá a Plus si necesitás orden propio</h3><p>Plus está pensado para comercios, equipos o usuarios que quieren una versión adaptada a su flujo real.</p></div></article>
+      </div></section>
+      <section class="wide-panel"><div><h2>Regla central</h2><p>Si una página la abrís todos los días, debería estar a un clic. Si una búsqueda la repetís siempre, debería tener camino directo.</p></div><a class="btn primary" href="/home/free/">Probar Free</a></section>
 
     </main>
     <footer class="footer">
@@ -180,7 +103,7 @@ button,input{font:inherit}
     </footer>
   </div>
   <script>
-// Punto Smart OS v14.5 home limpia
+// Punto Smart OS v14.3 inline JS fix
 
 const engines = {
   web: q => `https://www.google.com/search?q=${encodeURIComponent(q)}`,
